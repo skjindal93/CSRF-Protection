@@ -1,0 +1,71 @@
+<html>
+<head>
+	<script type="text/javascript" src="DJS/encoding.js"></script>
+	<script type="text/javascript" src="DJS/bn.js"></script>
+	<script type="text/javascript" src="DJS/hashing.js"></script>
+	<script type="text/javascript" src="DJS/aes.js"></script>
+	<script type="text/javascript" src="DJS/rsa.js"></script>
+	<script type="text/javascript" src="asn1JS.js"></script>
+	<script type="text/javascript" src="functions.js"></script>
+	<script type="text/javascript" src="algorithms.js"></script>
+	<script type="text/javascript" src="Key.js"></script>
+	<script type="text/javascript" src="generateKey.js"></script>
+	<script type="text/javascript" src="sign.js"></script>
+	<script type="text/javascript" src="decrypt.js"></script>
+	<script type="text/javascript" src="encrypt.js"></script>
+	<script type="text/javascript" src="exportKey.js"></script>
+	<script type="text/javascript" src="importKey.js"></script>
+	<script type="text/javascript" src="verify.js"></script>
+	<script type="text/javascript" src="digest.js"></script>
+	<script type="text/javascript" src="deriveKey.js"></script>
+	<script type="text/javascript" src="wrapKey.js"></script>
+	<script type="text/javascript" src="unwrapKey.js"></script>
+	<script type="text/javascript" src="resources/common.js"></script>
+	<script type="text/javascript" src="resources/js-test.js"></script>
+	<script type="text/javascript" src="resources/keys.js"></script>
+	<script type="text/javascript" src="subtleinriacrypto.js"></script>
+	
+	<script type="text/javascript">
+	function init(){
+		window.crypto = inriacrypto;
+		//var data = convertPlainTextToArrayBufferView("Hello");
+		var data = new Uint8Array(16);
+		function importPublicKey()
+		{
+		    var usages = ['encrypt'];
+		    var extractable = true;
+
+		    var importData = hexStringToUint8Array(kKeyData.rsa1.spki);
+		    var importAlgorithm = { name: 'RSA-OAEP', hash: {name: 'SHA-256'} };
+
+		    return inriacrypto.subtle.importKey('spki', importData, importAlgorithm, extractable, usages);
+		}
+
+		Promise.resolve(null).then(function(result) {
+		    return importPublicKey();
+		}).then(function(result) {
+
+		    publicKey = result;
+
+		    shouldEvaluateAs("publicKey.algorithm.name", "RSA-OAEP");
+		    shouldEvaluateAs("publicKey.algorithm.hash.name", "SHA-256");
+		    shouldEvaluateAs("publicKey.type", "public");
+		    shouldEvaluateAs("publicKey.extractable", true);
+		    shouldEvaluateAs("publicKey.usages.join(',')", "encrypt");
+
+		    return inriacrypto.subtle.encrypt({name: "RSA-OAEP", label: -1}, publicKey, data);
+		}).then(failAndFinishJSTest, function(result) {	
+		    logError(result);
+		    return inriacrypto.subtle.encrypt({name: "RSA-OAEP", label: "foo"}, publicKey, data);
+		}).then(failAndFinishJSTest, function(result) {
+
+		    logError(result);
+		}).then(finishJSTest, failAndFinishJSTest);
+
+	}
+	</script>
+</head>
+<body onload="init()">
+	
+</body>
+</html>

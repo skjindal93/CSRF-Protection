@@ -1,0 +1,13 @@
+var recognizedKeyUsageValues = ["encrypt", "decrypt", "sign", "verify", "deriveKey", "deriveBits", "wrapKey", "unwrapKey"];
+var recognizedKeyFormatValues = ["raw", "pkcs8", "spki", "jwk"];
+var encryptalgos = ["RSAES-PKCS1-v1_5", "RSA-OAEP", "AES-CTR", "AES-CBC", "AES-GCM", "AES-CFB"];
+var decryptalgos = ["RSAES-PKCS1-v1_5", "RSA-OAEP", "AES-CTR", "AES-CBC", "AES-GCM", "AES-CFB"];
+var signalgos = ["RSASSA-PKCS1-v1_5", "RSA-PSS","ECDSA", "AES-CMAC","HMAC"];
+var verifyalgos = ["RSASSA-PKCS1-v1_5", "RSA-PSS", "ECDSA", "AES-CMAC", "HMAC"];
+var generateKeyalgos = ["RSAES-PKCS1-v1_5", "RSASSA-PKCS1-v1_5", "RSA-PSS", "RSA-OAEP", "ECDSA", "ECDH", "AES-CTR", "AES-CBC", "AES-CMAC", "AES-GCM", "AES-CFB", "AES-KW", "HMAC", "DH"];
+var importKeyalgos = ["RSAES-PKCS1-v1_5", "RSASSA-PKCS1-v1_5", "RSA-PSS", "RSA-OAEP", "ECDSA", "ECDH", "AES-CTR", "AES-CBC", "AES-CMAC", "AES-GCM", "AES-CFB", "AES-KW", "HMAC", "DH"];
+var exportKeyalgos = ["RSAES-PKCS1-v1_5", "RSASSA-PKCS1-v1_5", "RSA-PSS", "RSA-OAEP", "ECDSA", "ECDH", "AES-CTR", "AES-CBC", "AES-CMAC", "AES-GCM", "AES-CFB", "AES-KW", "HMAC", "DH"];
+var digestalgos = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"];
+var deriveKeyalgos = ["ECDH", "DH", "CONCAT", "HKDF-CTR", "PBKDF2"];
+var wrapKeyalgos = ["RSAES-PKCS1-v1_5", "RSA-OAEP", "AES-CTR", "AES-CBC", "AES-GCM", "AES-CFB", "AES-KW"];
+var unwrapKeyalgos = ["RSAES-PKCS1-v1_5", "RSA-OAEP", "AES-CTR", "AES-CBC", "AES-GCM", "AES-CFB", "AES-KW"];

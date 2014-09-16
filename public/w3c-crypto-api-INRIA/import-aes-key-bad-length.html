@@ -1,0 +1,70 @@
+<html>
+<head>
+    <script type="text/javascript" src="DJS/encoding.js"></script>
+    <script type="text/javascript" src="DJS/hashing.js"></script>
+    <script type="text/javascript" src="DJS/aes.js"></script>
+    <script type="text/javascript" src="DJS/rsa.js"></script>
+    <script type="text/javascript" src="asn1JS.js"></script>
+    <script type="text/javascript" src="functions.js"></script>
+    <script type="text/javascript" src="algorithms.js"></script>
+    <script type="text/javascript" src="Key.js"></script>
+    <script type="text/javascript" src="generateKey.js"></script>
+    <script type="text/javascript" src="sign.js"></script>
+    <script type="text/javascript" src="decrypt.js"></script>
+    <script type="text/javascript" src="encrypt.js"></script>
+    <script type="text/javascript" src="exportKey.js"></script>
+    <script type="text/javascript" src="importKey.js"></script>
+    <script type="text/javascript" src="verify.js"></script>
+    <script type="text/javascript" src="digest.js"></script>
+    <script type="text/javascript" src="deriveKey.js"></script>
+    <script type="text/javascript" src="wrapKey.js"></script>
+    <script type="text/javascript" src="unwrapKey.js"></script>
+    <script type="text/javascript" src="resources/common.js"></script>
+    <script type="text/javascript" src="resources/js-test.js"></script>
+    <script type="text/javascript" src="subtleinriacrypto.js"></script>
+    
+    <script type="text/javascript">
+    function init(){
+        window.crypto = inriacrypto;
+        var kUnsupportedKeyLengths = [
+            0, 1, 15, 17, 31, 33, 23, 25, 64
+        ];
+
+        // Not exhaustive
+        var kAesAlgorithms = [
+          "AES-CBC"
+        ];
+
+        function testInvalidKeyImport(algorithmName, keyLengthBytes)
+        {
+            var algorithm = {name: algorithmName};
+            var keyData = new Uint8Array(keyLengthBytes);
+
+            var usages = ['encrypt', 'decrypt'];
+            var extractable = false;
+
+            return inriacrypto.subtle.importKey('raw', keyData, algorithm, extractable, usages).then(function(result) {
+                debug("FAIL: Successfully imported " + algorithmName + " key of length " + keyData.byteLength + " bytes");
+            }, function(result) {
+                debug("PASS: Failed to import " + algorithmName + " key of length " + keyData.byteLength + " bytes");
+            });
+        }
+
+        var lastPromise = Promise.resolve(null);
+
+        kAesAlgorithms.forEach(function(algorithmName) {
+            kUnsupportedKeyLengths.forEach(function(keyLengthBytes) {
+                lastPromise = lastPromise.then(testInvalidKeyImport.bind(null, algorithmName, keyLengthBytes));
+            });
+        });
+
+        lastPromise.then(finishJSTest, failAndFinishJSTest);
+
+    }
+
+    </script>
+</head>
+<body onload="init()">
+    
+</body>
+</html>

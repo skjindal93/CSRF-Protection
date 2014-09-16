@@ -1,0 +1,88 @@
+<html>
+<head>
+    <script type="text/javascript" src="DJS/encoding.js"></script>
+    <script type="text/javascript" src="DJS/hashing.js"></script>
+    <script type="text/javascript" src="DJS/aes.js"></script>
+    <script type="text/javascript" src="DJS/rsa.js"></script>
+    <script type="text/javascript" src="asn1JS.js"></script>
+    <script type="text/javascript" src="functions.js"></script>
+    <script type="text/javascript" src="algorithms.js"></script>
+    <script type="text/javascript" src="Key.js"></script>
+    <script type="text/javascript" src="generateKey.js"></script>
+    <script type="text/javascript" src="sign.js"></script>
+    <script type="text/javascript" src="decrypt.js"></script>
+    <script type="text/javascript" src="encrypt.js"></script>
+    <script type="text/javascript" src="exportKey.js"></script>
+    <script type="text/javascript" src="importKey.js"></script>
+    <script type="text/javascript" src="verify.js"></script>
+    <script type="text/javascript" src="digest.js"></script>
+    <script type="text/javascript" src="deriveKey.js"></script>
+    <script type="text/javascript" src="wrapKey.js"></script>
+    <script type="text/javascript" src="unwrapKey.js"></script>
+    <script type="text/javascript" src="resources/common.js"></script>
+    <script type="text/javascript" src="resources/js-test.js"></script>
+    <script type="text/javascript" src="subtleinriacrypto.js"></script>
+    
+    <script type="text/javascript">
+    function init(){
+
+    	window.crypto = inriacrypto;
+		var aesCbc = {name: 'AES-CBC'};
+		var aesKeyBytes = new Uint8Array(16);
+		var extractable = true;
+
+		// Undefined key usage.
+		// FIXME: http://crbug.com/262383
+		//shouldThrow("inriacrypto.subtle.importKey('raw', aesKeyBytes, aesCbc, extractable, undefined)");
+
+		Promise.resolve(null).then(function() {
+		    // Invalid data
+		    return inriacrypto.subtle.importKey('raw', [], aesCbc, extractable, ['encrypt']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // Invalid data
+		    return inriacrypto.subtle.importKey('raw', null, aesCbc, extractable, ['encrypt']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // Invalid algorithm
+		    return inriacrypto.subtle.importKey('raw', aesKeyBytes, null, extractable, ['encrypt']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // Invalid format.
+		    return inriacrypto.subtle.importKey('invalid format', aesKeyBytes, aesCbc, extractable, ['encrypt']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // Invalid key usage (case sensitive).
+		    return inriacrypto.subtle.importKey('raw', aesKeyBytes, aesCbc, extractable, ['ENCRYPT']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // If both the format and key usage are bogus, should complain about the
+		    // format first.
+		    return inriacrypto.subtle.importKey('invalid format', aesKeyBytes, aesCbc, extractable, ['ENCRYPT']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // Missing hash parameter for HMAC.
+		    return inriacrypto.subtle.importKey('raw', new Uint8Array(20), {name: 'HMAC'}, extractable, ['sign']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+
+		    // SHA-1 doesn't support the importKey operation.
+		    return inriacrypto.subtle.importKey('raw', new Uint8Array(20), {name: 'SHA-1'}, extractable, ['sign']);
+		}).then(failAndFinishJSTest, function(result) {
+		    logError(result);
+		}).then(finishJSTest, failAndFinishJSTest);
+
+	}
+
+    </script>
+</head>
+<body onload="init()">
+    
+</body>
+</html>

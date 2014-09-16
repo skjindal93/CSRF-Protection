@@ -1,0 +1,84 @@
+<html>
+<head>
+	<script type="text/javascript" src="DJS/encoding.js"></script>
+	<script type="text/javascript" src="DJS/hashing.js"></script>
+	<script type="text/javascript" src="DJS/aes.js"></script>
+	<script type="text/javascript" src="DJS/rsa.js"></script>
+	<script type="text/javascript" src="asn1JS.js"></script>
+	<script type="text/javascript" src="functions.js"></script>
+	<script type="text/javascript" src="algorithms.js"></script>
+	<script type="text/javascript" src="Key.js"></script>
+	<script type="text/javascript" src="generateKey.js"></script>
+	<script type="text/javascript" src="sign.js"></script>
+	<script type="text/javascript" src="decrypt.js"></script>
+	<script type="text/javascript" src="encrypt.js"></script>
+	<script type="text/javascript" src="exportKey.js"></script>
+	<script type="text/javascript" src="importKey.js"></script>
+	<script type="text/javascript" src="verify.js"></script>
+	<script type="text/javascript" src="digest.js"></script>
+	<script type="text/javascript" src="deriveKey.js"></script>
+	<script type="text/javascript" src="wrapKey.js"></script>
+	<script type="text/javascript" src="unwrapKey.js"></script>
+	<script type="text/javascript" src="resources/common.js"></script>
+	<script type="text/javascript" src="resources/js-test.js"></script>
+	<script type="text/javascript" src="tv_sha256_long.js"></script>
+	<script type="text/javascript" src="subtleinriacrypto.js"></script>
+	
+	<script type="text/javascript">
+	function init(){
+		
+		var start = new Date().getTime();
+		window.crypto = inriacrypto;
+		
+		/*var algorithmName = "SHA-256";
+		var inputHex = "00";
+		var arr = [69,17,1,37,14,198,242,102,82,36,157,89,220,151,75,115,97,213,113,168,16,28,223,211,106,186,59,88,84,211,174,8,107,95,221,69,151,114,27,102,227,192,220,93,140,96,109,150,87,208,227,35,40,58,82,23,209,245,63,47,40,79,87,184,92,138,97,172,137,36,113,31,137,92,94,217,14,241,119,69,237,45,114,138,189,34,165,247,161,52,121,164,98,215,27,86,193,154,116,164,11,101,92,88,237,254,10,24,138,210,207,70,203,243,5,36,246,93,66,60,131,125,209,255,43,244,98,172,65,152,0,115,69,187,68,219,183,177,200,97,41,140,223,97,152,42,131,58,252,114,143,174,30,218,47,135,170,44,148,128,133,139,236];
+		var out = [60,89,58,165,57,253,205,174,81,108,223,47,21,0,15,102,52,24,92,136,245,5,179,151,117,251,154,177,55,161,10,162];
+		var input = new Uint8Array(arr);
+		
+		var expectedOutputHex = "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d";
+
+		// Most of the crypto LayouTests use ArrayBufferView for data input. This one
+		// passes an ArrayBuffer instead.
+		// var input = hexStringToUint8Array(inputHex);
+
+		inriacrypto.subtle.digest({name : algorithmName}, input).then(function(result) {
+			console.log(result);
+		    bytesShouldMatchHexString("sha-256 of [0]", expectedOutputHex, result);
+		}).then(finishJSTest, failAndFinishJSTest);*/
+
+		function runTest(testCase){
+			//var importAlgorithm = {name: 'HMAC', hash: {name: "SHA-256"}};
+			//var algorithm = {name: 'HMAC'};
+
+			//var key = null;
+			//var keyData = hexStringToUint8Array(testCase.key);
+			//var usages = ['sign', 'verify'];
+			//var extractable = false;
+			var algorithmName = "SHA-256";
+			var input = testCase.data;
+			input = new Uint8Array(input);
+
+			var expectedOutputHex = convertStringToHex(convertArrayBufferViewToPlainText(new Uint8Array(testCase.hash)));
+
+			return inriacrypto.subtle.digest({name : algorithmName}, input).then(function(result) {
+				var finish = new Date().getTime();
+				console.log(finish-start);
+		    	//bytesShouldMatchHexString("sha-256 of [0]", expectedOutputHex, result);
+			});
+		}
+		var lastPromise = Promise.resolve(null);
+
+		testVectorsSha256Long.forEach(function(testCase) {
+			lastPromise = lastPromise.then(runTest.bind(null, testCase));
+		});
+
+		lastPromise.then(finishJSTest, failAndFinishJSTest);
+
+	}
+	</script>
+</head>
+<body onload="init()">
+	
+</body>
+</html>

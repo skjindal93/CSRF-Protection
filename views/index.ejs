@@ -1,0 +1,55 @@
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="/DJCL/src/encoding.js"></script>
+<script src="/DJCL/src/hashing.js"></script>
+<script src="/DJCL/src/aes.js"></script>
+<script src="/DJCL/src/rsa.js"></script>
+<script src="/w3c-crypto-api-INRIA/functions.js"></script>
+<script src="/w3c-crypto-api-INRIA/algorithms.js"></script>
+<script src="/w3c-crypto-api-INRIA/Key.js"></script>
+<script src="/w3c-crypto-api-INRIA/generateKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/sign.js"></script>
+<script src="/w3c-crypto-api-INRIA/decrypt.js"></script>
+<script src="/w3c-crypto-api-INRIA/encrypt.js"></script>
+<script src="/w3c-crypto-api-INRIA/exportKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/importKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/verify.js"></script>
+<script src="/w3c-crypto-api-INRIA/digest.js"></script>
+<script src="/w3c-crypto-api-INRIA/deriveKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/wrapKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/unwrapKey.js"></script>
+<script src="/w3c-crypto-api-INRIA/subtleinriacrypto.js"></script>
+
+<script type="text/javascript">
+	window.crypto = crypto;
+	var key = '<%- token %>';
+	var key = JSON.parse(key);
+	var signalgo = {name : 'HMAC'};
+	
+	function changecsrf(){
+		var content = $(".form-csrf").serializeArray();
+		var msg = "";
+		for (var i=0; i<content.length; i++){
+			if (content[i].name != '_csrf'){
+				msg+= content[i].value;
+			}
+		}
+		var hash;
+		inriacrypto.subtle.sign(signalgo,key,convertPlainTextToArrayBufferView(msg)).then(function(result){
+			hash = result;
+			$("#csrf").val(convertArrayBufferViewToPlainText(hash));	
+		});
+	}
+
+	$(document).ready(function(){
+		//$(".form-csrf").submit(function(e){
+			//$(".form-csrf").submit();
+		//});
+	});
+	
+</script>
+<form class="form-csrf" action="/" method="post">
+	<input id="csrf" type="hidden" name="_csrf"></input>
+	Color:<input id="color" name="color" onchange="changecsrf();"></input>
+	Color:<input id="color" name="color" onchange="changecsrf();"></input>
+	<button type="submit" id="submit" value="Save">Save</button>
+</form>
